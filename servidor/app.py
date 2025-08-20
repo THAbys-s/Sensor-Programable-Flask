@@ -32,11 +32,14 @@ def sensor():
     valor = datos['valor']
 
     print(f"Nombre: {nombre}, Valor: {valor}")
-    db.execute("""INSERT INTO tabla_ejemplo (id, nombre, valor)
-                  VALUES (?, ?, ?)""", (nombre, valor))
+    db.execute("""INSERT INTO tabla_ejemplo (nombre, valor)
+                  VALUES (?, ?)""", (nombre, valor))
     db.commit()
     cerrarConexion()
-    return "OK", 200
+    
+    res = {'resultado': 'ok'}
+
+    return jsonify(res)
 
 
 @app.route("/api/sensor/<int:id>")
