@@ -1,0 +1,12 @@
+BEGIN TRANSACTION;
+DROP TABLE IF EXISTS "tabla_ejemplo";
+CREATE TABLE IF NOT EXISTS "tabla_ejemplo" (
+	"id"	INTEGER,
+	"nombre"	TEXT NOT NULL,
+	"valor"	TEXT NOT NULL,
+	"fecha_hora"	TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+INSERT INTO "tabla_ejemplo" VALUES (3,'Diego-Sensor','9','2025-08-20 15:04:23');
+INSERT INTO "tabla_ejemplo" VALUES (4,'Juanma-Sensor','18','2025-08-20 15:04:50');
+COMMIT;

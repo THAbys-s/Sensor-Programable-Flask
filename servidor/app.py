@@ -1,7 +1,10 @@
 import sqlite3
 from flask import Flask, request, g, jsonify, url_for
+from math import ceil
 
 app = Flask(__name__)
+
+resultados_por_pag = 10
 
 def dict_factory(cursor, row):
   """Arma un diccionario con los valores de la fila."""
@@ -55,3 +58,34 @@ def sensor_valor(id):
           'nombre': fila['nombre'],
           'url': url_for('valores_ejemplo', id=id, _external=True)}
    return jsonify(res)
+
+
+@app.route("/api/sensor/pagina")
+def paginado_sensor():
+    args = request.args
+    pagina = int(args.get('page', '1'))
+    descartar = (pagina-1) * resultados_por_pag
+    db = abrirConexion()
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) AS cant FROM tabla_ejemplo;")
+    cant = cursor.fetchone()['cant']
+    paginas = ceil(cant / resultados_por_pag)
+
+    if pagina < 1 or pagina > paginas:
+       return f"Página inexistente: {pagina}", 400
+
+    cursor.execute(""" SELECT id, nombre 
+                        FROM tabla_ejemplo LIMIT ? OFFSET ?; """, 
+                        (resultados_por_pag,descartar))
+    lista = cursor.fetchall()
+    cerrarConexion()
+    siguiente = None
+    anterior = None
+    if pagina > 1:
+       anterior = url_for('', page=pagina-1, _external=True)
+    if pagina < paginas:
+       siguiente = url_for('sensor', page=pagina+1, _external=True)
+    info = { 'count' : cant, 'pages': paginas,
+             'next' : siguiente, 'prev' : anterior }
+    res = { 'info' : info, 'results' : lista}
+    return jsonify(res)
