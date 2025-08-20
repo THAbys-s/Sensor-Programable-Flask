@@ -1,0 +1,11 @@
+BEGIN TRANSACTION;
+DROP TABLE IF EXISTS "tabla_ejemplo";
+CREATE TABLE IF NOT EXISTS "tabla_ejemplo" (
+	"id"	INTEGER,
+	"nombre"	TEXT NOT NULL,
+	"valor"	INTEGER,
+	"fecha_hora"	INTEGER,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+INSERT INTO "tabla_ejemplo" VALUES (1,'Juan',59,1092025);
+COMMIT;
